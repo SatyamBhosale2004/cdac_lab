@@ -1,4 +1,4 @@
-package in.ads.practice.day3;
+
 import java.util.Scanner;
 
 public class LinkedListPrac {
