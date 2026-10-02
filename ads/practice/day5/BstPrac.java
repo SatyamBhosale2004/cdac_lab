@@ -1,4 +1,4 @@
-
+package in.ads.practice.day5;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -6,7 +6,8 @@ import java.util.Stack;
 import java.util.Scanner;
 
 public class BstPrac {
-private static final Scanner sc = new Scanner(System.in);
+	private static final Scanner sc = new Scanner(System.in);
+
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		BinarySearchTree t = new BinarySearchTree();
@@ -26,12 +27,30 @@ private static final Scanner sc = new Scanner(System.in);
 		t.inOrderWORecursion();
 		t.postOrder();
 		t.postOrderWORecursion();
-		
-		System.out.println("Enter element you want to search");
+
+		System.out.println("Enter element you want to search via bfs");
 		t.bfs(sc.nextInt());
+		System.out.println("Enter element you want to search via dfs");
+		t.dfs(sc.nextInt());
+		System.out.println("Enter element you want to search via bs");
+		t.binarySearch(sc.nextInt());
+		System.out.println("Enter element you want to search via bs with its parent");
+		BinarySearchTree.Node[] arr = t.binarySearchChildWithParent(sc.nextInt());
+		if (arr[0] == null)
+			System.out.println("Value not found");
+		else if (arr[1] == null)
+			System.out.println("Value found at " + arr[0].getData() + " with parent " + arr[1]);
+		else
+			System.out.println("Value found at " + arr[0].getData() + " with parent " + arr[1].getData());
 		System.out.println("Height of tree is " + t.height());
-		t.deleteAll();
-		System.out.println("Height of tree after deleteALL " + t.height());
+		
+		System.out.println("Enter element to delete ");
+		t.deleteNode(sc.nextInt());
+		
+		System.out.println("Tree now: ");
+		t.inOrder();
+//		t.deleteAll();
+//		System.out.println("Height of tree after deleteALL " + t.height());
 	}
 
 }
@@ -55,6 +74,10 @@ class BinarySearchTree {
 			data = val;
 			left = null;
 			right = null;
+		}
+
+		public int getData() {
+			return data;
 		}
 	}
 
@@ -203,7 +226,7 @@ class BinarySearchTree {
 		System.out.print("PostWOR : ");
 		Stack<Node> s = new Stack<>();
 		Node trav = root;
-		Node lastVisited= null;
+		Node lastVisited = null;
 		while (trav != null || !s.isEmpty()) {
 			while (trav != null) {
 //				System.out.print(trav.data + ", ");
@@ -211,7 +234,7 @@ class BinarySearchTree {
 				s.push(trav);
 				trav = trav.left;
 			}
-			
+
 			Node peekNode = s.peek();
 			if (peekNode.right != null && lastVisited != peekNode.right)
 				trav = peekNode.right;
@@ -222,24 +245,125 @@ class BinarySearchTree {
 		}
 		System.out.println();
 	}
-	
+
 	public Node bfs(int val) {
-		if( root == null)
+		if (root == null)
 			return null;
 		Queue<Node> q = new LinkedList<>();
 		q.offer(root);
-		while(!q.isEmpty()) {
+		while (!q.isEmpty()) {
 			Node trav = q.poll();
-			if(val==trav.data) {
+			if (val == trav.data) {
 				System.out.println("Value found");
 				return trav;
 			}
-			if(trav.left != null)
+			if (trav.left != null)
 				q.offer(trav.left);
-			if(trav.right != null)
+			if (trav.right != null)
 				q.offer(trav.right);
 		}
-		System.out.println("Value not found"); 
+		System.out.println("Value not found");
 		return null;
+	}
+
+	public Node dfs(int val) {
+		if (root == null)
+			return null;
+		Stack<Node> s = new Stack<>();
+		s.push(root);
+		while (!s.isEmpty()) {
+			Node trav = s.pop();
+			if (val == trav.data) {
+				System.out.println("Value found");
+				return trav;
+			}
+			if (trav.left != null)
+				s.push(trav.left);
+			if (trav.right != null)
+				s.push(trav.right);
+		}
+		System.out.println("Value not found");
+		return null;
+	}
+
+	public Node binarySearch(int val) {
+		if (root == null)
+			return null;
+		Node trav = root;
+		while (trav != null) {
+			if (val == trav.data) {
+				System.out.println("Value found");
+				return trav;
+			}
+			if (val < trav.data)
+				trav = trav.left;
+			else
+				trav = trav.right;
+		}
+		System.out.println("Value not found");
+		return null;
+	}
+
+	public Node[] binarySearchChildWithParent(int val) {
+
+		Node parent = null;
+		Node trav = root;
+		while (trav != null) {
+			if (val == trav.data) {
+				return new Node[] { trav, parent };
+			}
+			parent = trav;
+			if (val < trav.data)
+				trav = trav.left;
+			else
+				trav = trav.right;
+		}
+		System.out.println("Value not found");
+		return new Node[] { null, null };
+	}
+
+	public void deleteNode(int val) {
+		Node trav, parent;
+		// find the node to be deleted along with parent
+		Node[] arr = binarySearchChildWithParent(val);
+		trav = arr[0];
+		parent = arr[1];
+		// if node is not found throw exe
+		if (trav == null)
+			throw new RuntimeException("Node not found");
+		// if node has left and ruight child
+		if (trav.left != null && trav.right != null) {
+			// find its successor with parent
+			parent = trav;
+			Node succ = trav.right;
+			while (succ.left != null) {
+				parent = succ;
+				succ = succ.left;
+			}
+			// overwrite node with succ data
+			trav.data = succ.data;
+			// mark succ as null
+			trav = succ;
+		}
+		// if node has only right child
+		if (trav.left == null) {
+			if (trav == root)
+				root = trav.right;
+			else if (trav == parent.left)
+				parent.left = trav.right;
+			else
+				parent.right = trav.right;
+		}
+		// if node has only left child
+		else if (trav.right == null) {
+			if (trav == root)
+				root = trav.left;
+			else if (trav == parent.left)
+				parent.left = trav.left;
+			else
+				parent.right = trav.left;
+		}
+		
+		 
 	}
 }
