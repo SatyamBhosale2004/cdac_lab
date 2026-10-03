@@ -27,7 +27,7 @@ public class BstPrac {
 		t.inOrderWORecursion();
 		t.postOrder();
 		t.postOrderWORecursion();
-
+		t.postOrderWORecursion2();
 		System.out.println("Enter element you want to search via bfs");
 		t.bfs(sc.nextInt());
 		System.out.println("Enter element you want to search via dfs");
@@ -43,12 +43,32 @@ public class BstPrac {
 		else
 			System.out.println("Value found at " + arr[0].getData() + " with parent " + arr[1].getData());
 		System.out.println("Height of tree is " + t.height());
-		
+		System.out.println("Size of tree : ");
+		System.out.println(t.size());
+		System.out.println("No of leaves : ");
+		System.out.println(t.leaves());
+		System.out.println("Min element is : ");
+		System.out.println(t.min().getData());
+		System.out.println("Max element is : ");
+		System.out.println(t.max().getData());
+		System.out.println("Level by level tree");
+		t.levelByLevel();
+		System.out.println("Tree is a full binary tree or not ?");
+		System.out.println(t.isFull());
+		System.out.println("Tree is a perfect binary tree or not ?");
+		System.out.println(t.isPrefect());
+		System.out.println("Tree is a complete binary tree or not ?");
+		System.out.println(t.isCompleted());
+		System.out.println("Tree is a binary tree or not ?");
+		System.out.println(t.isBst());
 		System.out.println("Enter element to delete ");
 		t.deleteNode(sc.nextInt());
-		
+		System.out.println("Size of tree now : ");
+		t.size();
 		System.out.println("Tree now: ");
 		t.inOrder();
+		
+		
 //		t.deleteAll();
 //		System.out.println("Height of tree after deleteALL " + t.height());
 	}
@@ -62,6 +82,7 @@ class BinarySearchTree {
 		private int data;
 		private Node left;
 		private Node right;
+		public boolean visited;
 
 		/// Node methods
 		public Node() {
@@ -140,19 +161,19 @@ class BinarySearchTree {
 	}
 
 	public void preOrder() {
-		System.out.print("Pre : ");
+		System.out.print("Pre : \t\t");
 		preOrder(root);
 		System.out.println();
 	}
 
 	public void inOrder() {
-		System.out.print("In : ");
+		System.out.print("In : \t\t");
 		inOrder(root);
 		System.out.println();
 	}
 
 	public void postOrder() {
-		System.out.print("Post : ");
+		System.out.print("Post : \t\t");
 		postOrder(root);
 		System.out.println();
 	}
@@ -188,7 +209,7 @@ class BinarySearchTree {
 	}
 
 	public void preOrderWORecursion() {
-		System.out.print("PreWOR : ");
+		System.out.print("PreWOR : \t");
 		Stack<Node> s = new Stack<>();
 		Node trav = root;
 		while (trav != null || !s.isEmpty()) {
@@ -205,7 +226,7 @@ class BinarySearchTree {
 	}
 
 	public void inOrderWORecursion() {
-		System.out.print("InWOR : ");
+		System.out.print("InWOR : \t\t");
 		Stack<Node> s = new Stack<>();
 		Node trav = root;
 		while (trav != null || !s.isEmpty()) {
@@ -223,7 +244,7 @@ class BinarySearchTree {
 	}
 
 	public void postOrderWORecursion() {
-		System.out.print("PostWOR : ");
+		System.out.print("PostWOR : \t");
 		Stack<Node> s = new Stack<>();
 		Node trav = root;
 		Node lastVisited = null;
@@ -241,6 +262,31 @@ class BinarySearchTree {
 			else {
 				System.out.print(peekNode.data + ", ");
 				lastVisited = s.pop();
+			}
+		}
+		System.out.println();
+	}
+
+	public void postOrderWORecursion2() {
+		System.out.print("PostWOR2 : \t");
+		Stack<Node> s = new Stack<>();
+		Node trav = root;
+		while (trav != null || !s.isEmpty()) {
+			while (trav != null) {
+				s.push(trav);
+				trav = trav.left;
+			}
+			if (!s.empty()) {
+				trav = s.pop();
+				if (trav.right != null && !trav.right.visited) {
+					s.push(trav);
+					trav = trav.right;
+				} else {
+					System.out.print(trav.data + ", ");
+					trav.visited = true;
+					trav = null;
+
+				}
 			}
 		}
 		System.out.println();
@@ -363,7 +409,125 @@ class BinarySearchTree {
 			else
 				parent.right = trav.left;
 		}
+
+	}
+	
+	public int size(Node trav) {
+		if(trav == null)
+			return 0;
+		return 1 + size(trav.left) + size(trav.right);
+	}
+	
+	public int size() {
+		return size(root);
+	}
+	
+	public int leaves(Node trav) {
+		if(trav == null)
+			return 0;
+		if(trav.left == null && trav.right == null)
+			return 1;
 		
-		 
+		return leaves(trav.left) + leaves(trav.right);
+	}
+	public int leaves() {
+		return leaves(root);
+	}
+	
+	public Node min() {
+		if(root == null)
+			return null;
+		Node trav = root;
+		while(trav.left != null)
+			trav = trav.left;
+		
+		return trav;
+	}
+	public Node max() {
+		if(root == null)
+			return null;
+		Node trav = root;
+		while(trav.right != null)
+			trav = trav.right;
+		
+		return trav;
+	}
+	
+	public void levelByLevel() {
+		if(root == null)
+			return;
+		Queue<Node> q = new LinkedList<>();
+		q.offer(root);
+		
+		int level = 0;
+		
+		while(!q.isEmpty()) {
+			int count = q.size();
+			System.out.print("Level " +level+ " : ");
+			for(int iTmp = 0; iTmp < count ; iTmp++) {
+				Node trav = q.poll();
+				
+				System.out.print(trav.data + ", ");
+				if(trav.left!=null)
+					q.offer(trav.left);
+				if(trav.right!=null)
+					q.offer(trav.right);
+				
+			}
+			System.out.println();
+			level++;
+		}
+	}
+	
+	public boolean isFull(Node trav) {
+		if(root == null)
+			return true;
+		
+		if(trav.left == null && trav.right == null)
+			return true;
+		
+		if(trav.left == null || trav.right == null )
+			return false;
+		
+		return isFull(trav.left) && isFull(trav.right);
+	}
+	
+	public boolean isFull() {
+		return isFull(root);
+	}
+	
+	public boolean isPrefect() {
+		int h = height();
+		int expectedNoNodes = (1 << (h+1) + 1);
+		
+		return size() == expectedNoNodes;
+	}
+	
+	public boolean isCompleted(Node trav, int index, int total) {
+		if(trav == null)
+			return true;
+		
+		if(index >= total)
+			return false;
+		
+		return isCompleted(trav.left, 2*index + 1 ,total) && isCompleted(trav.right, 2*index+2,total);
+	}
+	
+	public boolean isCompleted() {
+		return isCompleted(root, 0 ,size()); 
+	}
+	
+	public boolean isBst(Node trav, long min, long max) {
+		if(trav==null)
+			return true;
+		
+		if(trav.data <= min || trav.data >= max)
+			return false;
+		
+		return isBst(trav.left, min , trav.data) && isBst(trav.right, trav.data, max );
+	}
+	
+	public boolean isBst() {
+		return isBst(root, Long.MIN_VALUE, Long.MAX_VALUE);
 	}
 }
