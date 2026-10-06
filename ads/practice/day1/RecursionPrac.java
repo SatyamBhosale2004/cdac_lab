@@ -1,4 +1,4 @@
-
+package in.ads.practice.day1;
 import java.util.Scanner;
 public class RecursionPrac {
 	public static void main(String args[]) {
