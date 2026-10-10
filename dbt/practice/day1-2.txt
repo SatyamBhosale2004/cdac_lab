@@ -1,0 +1,290 @@
+create first table -> 
+ddl
+create table student (
+	id int primary key auto_increment,
+	name varchar(30),
+	age int,
+	course char(10),
+	city varchar(20)
+);
+
+
+check struc
+
+desc students;
+show tables;
+
+dml
+insert records
+
+insert into student (name, age, course, city)
+values
+('satyam',22,'pgcp-ac','kalyan'),
+('shivam',23,'pgcp-ac','pune'),
+('ankit',23,'pgcp-ac','ulhasnagar'),
+('cyril',24,'pgcp-bda','kopar'),
+('pratiksha',21,'pgcp-ai','airoli');
+
+verify rows
+select * from students;
+
+select certain col
+
+select id,name,course from student;
+
+update records
+
+update student 
+set name = 'sanket'
+
+where id = 2;
+
+use json in sql
+
+create table student_json (
+	id int primary key auto_increment,
+	name varchar(100),
+	profile json
+);
+
+
+insert into json table
+
+insert into student_json (id, name, profile)
+values
+( 1, 'Rahul', '{"skills" : ["python","sql"],"score": 99,"address": {"city":"Mumbai"}}');
+
+
+fetch specific value from json
+
+select 
+	name,
+	profile->>'$.address.city' as city
+from student_json;
+
+
+filter acc to score using cast
+
+select * from student_json where cast(profile->>'$.score' as unsigned) > 90;
+
+check my sql's table name setting
+
+	
+demonstrate rel betn tables
+here we tell sql that if there's not a student in student table with an id dont add in result table thats how foreign key is use
+rank is keyword in modern sql so use stud_rank
+create table student_result (
+	stud_id int primary key,
+	marks int,
+	stud_rank int,
+	constraint fk_res_stud
+		foreign key (stud_id) references student(id)
+);
+
+
+insert vals in res
+
+insert into student_result (stud_id,marks,stud_rank)
+values
+(1,98,2),
+(2,97,3),
+(3,99,1),
+(4,96,4),
+(5,76,5);
+
+
+select specific student
+
+select
+	student.id,
+	student.name,
+	student.course,
+	student_result.marks,
+	student_result.stud_rank
+from student, student_result
+where student.id = student_result.stud_id
+and student.name = 'satyam';	
+
+
+
+day-2 implementations
+
+
+copy records to another table
+
+
+create table student_backup (
+	id int,
+	name varchar(30),
+	age int,
+	course char(10)
+);
+
+
+copy studs in ac course
+
+insert into student_backup (id,name,age,course) 
+select id,name,age,course
+from student
+where course = 'pgcp-ac';
+
+
+select * from student_backup;
+
+
+alter table
+
+
+add col
+
+alter table student
+add phoneNo varchar(15);
+
+
+modify datatype
+
+alter table student
+modify name varchar(40);
+
+rename col
+
+alter table student
+change age stud_age int;
+
+add and drop col 
+alter table student
+add emailId varchar(100);
+
+alter table student
+drop column emailId;
+
+
+rename col
+alter table student
+rename column phoneNo to mobileNo;
+
+
+default and null
+
+
+create table students_of_cdacMumbai (
+	id int primary key auto_increment,
+	name varchar(40),
+	age int default 18,
+	city varchar(100) default 'mumbai'
+);
+
+
+insert into students_of_cdacMumbai (name)
+values ('divyam');
+
+insert into students_of_cdacMumbai (name,age,city)
+values ('ravi',null,null);
+
+insert into students_of_cdacMumbai(name,age)
+values ('aisha',21);
+
+
+
+temp table
+
+create temporary table temp_employees(
+	id int primary key auto_increment,
+	name varchar(100),
+	department varchar(50)
+);
+
+
+insert into temp_employees (name,department)
+values
+('alice','it'),
+('bob','sales');
+
+drop table temp_employees;
+
+
+where clause with operators
+=,<>,<,>,<=,>=,and,or,not,in,not in,is null, is not null
+
+
+<> not equal to
+
+select name from student
+where course <> 'pgcp-bda';
+
+update 
+
+
+update student
+set city = "navi Mumbai"
+where id = 2;
+
+
+update mutl col
+
+update student
+set course = "pgcp-elec", city = "Mumbai"
+where id = 4;
+
+
+update using expression
+update student
+set stud_age = stud_age+1
+where course = "pgcp-elec";
+
+
+
+transactions tcl
+
+select @@autocommit;
+
+start transaction;
+
+delete from student_result where stud_id = 4; 
+cuz foreign key constraint
+
+delete from student where id = 4;
+
+select * from student where id = 4;
+
+rollback;
+
+savepoint basically in betn trans we can rollback
+
+
+start transaction;
+
+update student
+set city = "nigga"
+where id = 4;
+
+
+savepoint before_second_update;
+
+update student
+set city = 'pune'
+where id = 6;
+
+rollback to before_second_update;
+
+rollback;
+
+
+
+delete vs truncate vs drop
+
+
+create table demo (
+	id int primary key auto_increment,
+	name  varchar(30)
+);
+
+insert into demo (name) values ('one'),('two'),('three');
+
+select * from demo;
+
+
+delete from demo where id = 2;
+
+
+delete from demo;
