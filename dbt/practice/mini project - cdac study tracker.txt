@@ -1,0 +1,40 @@
+mini project - cdac study tracker
+
+creating module topics mock study_log tables
+
+
+create table modules (module_id int primary key auto_increment, module_name varchar(50), start_date date, end_date date);
+
+create table topics (
+	topic_id int primary key auto_increment,
+	topic_name varchar(50),
+	module_id int not null,
+	rev_counter int,
+	difficulty int not null default 3,
+	constraint fk_topics_module foreign key (module_id) references modules(module_id),
+	constraint chk_diff check (difficulty between 1 and 5)
+);
+
+
+create table study_log (
+	log_id int primary key auto_increment, 
+	topic_id int not null,
+	log_date date not null,
+	minutes int not null
+	constraint chk_min check (minutes > 0),
+	constraint fk_topics_id foreign key (topic_id) references topics(topic_id)
+);
+
+
+create table mock (
+	mock_id int primary key auto_increment,
+	mock_date date not null,
+	module_id int not null,
+	score decimal not null,
+	total_marks int not null default 40,
+	constraint fk_module_id foreign key (module_id) references modules(module_id),
+	constraint chk_marks check (score >=0 and score <= total_marks)
+);
+
+ 
+ 

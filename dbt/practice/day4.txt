@@ -1,0 +1,15 @@
+day4
+
+
+aggregate functions
+
+select count(*), count(comm), max(sal),min(sal),avg(sal) from emp;
+
+select sum(sal) from emp where deptno = 10;
+
+select job,min(sal) from emp group by job;
+
+select deptno, count(*) as emp_count, avg(sal) as avg_sal from emp group by deptno;
+
+select deptno, sum(sal)  from emp group by deptno having sum(sal) > 5000;
+

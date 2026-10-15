@@ -1,0 +1,153 @@
+day 3
+
+
+create table passport_registration (id int , name varchar(50), aadhar int, pan_no int);
+
+create table passport_application (app_id int primary key, app_date date, status varchar(15), reg_id int, Foreign key (reg_id references passport_registration(id));
+
+insert into passport_registration (id,name,aadhar,pan_no)
+values
+(1,'person A',1234567,123),
+(2,'person B',3241,2521);
+
+insert into passport_application (app_id, app_date, status, reg_id)
+values
+(1,'2026-09-10','inprocess',1),
+(2,'2026-10-1','submitted',1),
+(3,'2025-05-12','sucessful',2);
+
+select * from passport_application;
+
+select pr.id,pr.name,pr.aadhar,pa.app_id,pa.app_date,pa.status,pa.reg_id
+from passport_registration as pr,passport_application as pa 
+where pr.id = pa.reg_id;
+
+
+
+transactions practice
+
+
+start transaction;
+
+update s_demo set age = 99 where id = 1;
+select id, age from s_demo where id = 1;
+
+rollback;
+select id, age from s_demo where id = 1;
+
+
+savepoint
+
+
+start transaction;
+
+update s_demo set age = 40 where id =1;
+select id age from s_demo where id = 1;
+savepoint after_first;
+
+update s_demo set age = 44 where id = 2;
+rollback to after_first;
+commit;
+select id age from s_demo where id in (1,2);
+
+
+select * from s_demo where course = null;
+
+select * from s_demo where course is null;
+
+select * from s_demo where course is not null;
+
+select name, ifnull(course, 'not assigned') as course from s_demo;
+
+select 5 + null,null = null, null is null;
+
+select count(*), count ( course) from s_demo;
+
+
+temp table practice
+
+create temporary table tmp_java as select * from s_demo where course = 'java';
+
+update tmp_java set name = 'nigga' where id = 4 ;
+select * from tmp_java;
+select * from s_demo where course = 'java';
+
+insert into s_demo select name,city from tmp_java;
+
+show tables;
+
+drop temproary table tmp_java;
+
+
+-- TITLE: exam practice database and tables
+CREATE DATABASE IF NOT EXISTS exam_practice;
+USE exam_practice;
+DROP TABLE IF EXISTS EMP;
+DROP TABLE IF EXISTS DEPT;
+
+CREATE TABLE DEPT (DEPTNO INT, DNAME VARCHAR(15), LOC VARCHAR(10));
+INSERT INTO DEPT VALUES
+(10, 'ACCOUNTING', 'NEW YORK'),
+(20, 'RESEARCH', 'DALLAS'),
+(30, 'SALES', 'CHICAGO'),
+(40, 'OPERATIONS', 'BOSTON');
+
+CREATE TABLE EMP (
+    EMPNO INT, ENAME VARCHAR(10), JOB VARCHAR(9),
+    HIREDATE DATE, SAL FLOAT, COMM FLOAT, DEPTNO INT
+);
+INSERT INTO EMP VALUES
+(7839, 'KING', 'MANAGER', '1991-11-17', 5000, NULL, 10),
+(7698, 'BLAKE', 'CLERK', '1981-05-01', 2850, NULL, 30),
+(7782, 'CLARK', 'MANAGER', '1981-06-09', 2450, NULL, 10),
+(7566, 'JONES', 'CLERK', '1981-04-02', 2975, NULL, 20),
+(7654, 'MARTIN', 'SALESMAN', '1981-09-28', 1250, 1400, 30),
+(7499, 'ALLEN', 'SALESMAN', '1981-02-20', 1600, 300, 30);
+
+SELECT * FROM EMP;
+
+select ename sal from emp;
+
+select ename,sal * 12 as annual_sal from emp;
+
+select ename,sal,sal*0.20 as hra from emp;
+
+select distinct deptno from emp;
+
+select distinct job,deptno from emp;
+
+select ename,sal from emp order by sal desc;
+
+select ename,job from emp order by job, sal desc;
+
+select ename, sal from emp order by sal desc limit 3;
+
+select ename, sal from emp order by sal desc limit 1,2;
+
+
+where practice
+
+select * from emp where sal > 2500 ;
+
+select * from emp where deptno<>30;
+
+select * from emp where job = 'clerk' and sal > 2900;
+
+select * from emp where (job = 'clerk' or job = 'manager') and deptno = 10;
+
+select * from emp where not deptno = 30;
+
+select ename from emp where sal between 1500 and 3000;
+
+select ename from emp where job in ('clerk' , 'salesman');
+
+select ename from emp where deptno not in (10,20);
+
+select ename from emp where ename like 'm%';
+select ename from emp where ename like '%k';
+select ename from emp where ename like '_l%';
+
+select * from emp where job like '%t';
+
+select ename from emp where comm is null;
+

@@ -288,3 +288,91 @@ delete from demo where id = 2;
 
 
 delete from demo;
+
+
+
+constraints practice
+
+create table dept (
+	deptNo int primary key,
+	dname varchar(20) not null unique
+);
+
+create table emp (
+	empNo int primary key auto_increment,
+	ename varchar(20) not null,
+	salary int default 25000,
+	deptNo int,
+	constraint chk_sal check (salary>0),
+	constraint fk_emp_dept foreign key (deptNo) references dept(deptNo)
+);
+
+
+insert into dept values(10,'accounting');
+
+insert into emp (ename, deptNo) values ('king',10);
+select * from emp;
+
+
+insert into emp (ename,deptNo) values ('x',99);
+
+insert into emp (ename,salary,deptNo) values ('y',-1,10);
+
+insert into dept values(10,'duplicate');
+
+insert into emp (ename,deptNo) values(null,10);
+
+alter table emp add constraint ep_name unique (ename);
+
+alter table emp drop index ep_name;
+
+alter table emp drop foreign key fk_emp_dept;
+
+alter table emp drop check chk_sal;
+
+ALTER TABLE emp_demo MODIFY salary INT DEFAULT 30000;
+
+
+update delete practice
+
+CREATE TABLE s_demo (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(30),
+    age INT,
+    course VARCHAR(10),
+    city VARCHAR(15)
+);
+
+INSERT INTO s_demo (id, name, age, course, city) VALUES (1, 'Aniket', 30, 'JAVA', 'Mumbai');
+
+INSERT INTO s_demo (id, age, name, course, city) VALUES (2, 25, 'Gauri', 'DotNet', 'Pune');
+
+
+INSERT INTO s_demo (id, name, city) VALUES (3, 'Bhavesh', 'Satara');
+
+INSERT INTO s_demo VALUES (4, 'Vaishnavi', 23, 'JAVA', 'Satara');
+
+INSERT INTO s_demo (name, age, course, city) VALUES
+('Rohit', 28, 'Python', 'Kolhapur'),
+('Akshay', 30, 'MySQL', 'Sangli'),
+('Vidya', 25, 'AC', 'Pune');
+
+
+INSERT INTO s_demo SET name = 'Neha', age = 24, course = 'JAVA', city = 'Pune';
+SELECT * FROM s_demo;
+
+
+select * from s_demo where id=1;
+
+update s_demo set name ='sagar' where id = 1;
+
+update s_demo set age = age+1 where course = 'java';
+
+update s_demo set course = 'ai' , city = 'mumbai' where course = 'python';
+
+
+delete from s_demo where course = 'dotnet';
+
+set sql_safe_updates = 1;
+update s_demo set age = 0;
+set sql_safe_updates = 0;
