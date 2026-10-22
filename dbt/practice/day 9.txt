@@ -1,0 +1,73 @@
+day 9
+
+
+
+triggers
+
+
+CREATE TABLE student_audit (
+    audit_id   INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT,
+    action     VARCHAR(10),
+    old_marks  DECIMAL(5,2),
+    new_marks  DECIMAL(5,2),
+    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+
+delimiter //
+create trigger trg_std_bi before insert on student for each row 
+begin 
+	if new.marks < 0 or new.marks > 100 then
+		signal sqlstate  '45000' set message_txt = 'marks must be between 0 and 100';
+	end if;
+end //
+
+
+create trigger trg_std_ai after insert on student for each row
+begin 
+	insert into student_audit(student_id, action, old_marks, new_marks)
+	values (new.student_id, 'insert', null, new.marks);
+end //
+delimiter ;
+
+insert into student values (105, 'karan', 20, 70.00);
+insert into student values (106, 'bad' ,20, 150.00);
+select * from student_audit;
+
+
+show triggers;
+
+
+
+create table student_history like student;
+
+
+delimiter //
+create trigger trg_stud_bu before update on student for each row
+begin
+	set new.marks = least(greatest(new.marks , 0),100);
+end //
+
+create trigger trg_stud_au after update on student for each row
+begin
+	if not (old.marks <=> new.marks) then 
+		insert into student_audit (student_id, action, old_marks,new_marks)
+		values (old.student_id,'update',old.marks,new.marks);
+	end if;
+end //
+CREATE TRIGGER trg_student_ad AFTER DELETE ON student FOR EACH ROW
+BEGIN
+    INSERT INTO student_history VALUES (OLD.student_id, OLD.name, OLD.dept_id, OLD.marks);
+    INSERT INTO student_audit (student_id, action, old_marks, new_marks)
+    VALUES (OLD.student_id, 'DELETE', OLD.marks, NULL);
+END //
+DELIMITER ;
+
+-- TITLE: exercise all three triggers on student 105
+UPDATE student SET marks = 120 WHERE student_id = 105;
+UPDATE student SET name = 'Karan K' WHERE student_id = 105;
+DELETE FROM student WHERE student_id = 105;
+SELECT * FROM student_audit;
+SELECT * FROM student_history;

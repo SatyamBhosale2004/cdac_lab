@@ -13,3 +13,74 @@ select deptno, count(*) as emp_count, avg(sal) as avg_sal from emp group by dept
 
 select deptno, sum(sal)  from emp group by deptno having sum(sal) > 5000;
 
+
+
+relational algebra unions prac
+
+select id from passport_registration union select app_no from passport_application;
+
+select name from passport_registration union all select status from passport_application;
+
+select name from passport_registration intersect select status from passport_application;
+
+select name from passport_registration except select status from passport_application;
+
+
+select id,name,app_date,status
+from passport_registration
+inner join passport_application on passport_registration.id = passport_application.reg_id;
+
+
+select id,name,app_date,status
+from passport_registration
+left join passport_application on passport_registration.id = passport_application.reg_id;
+
+select id,name,app_date,status
+from passport_registration
+right join passport_application on passport_registration.id = passport_application.reg_id;
+
+
+select id,name,app_date,status
+from passport_registration
+full join passport_application on passport_registration.id = passport_application.reg_id;
+
+
+
+select id,name,app_date,status
+from passport_registration
+left join passport_application on passport_registration.id = passport_application.reg_id
+union
+select id,name,app_date,status
+from passport_registration
+right join passport_application on passport_registration.id = passport_application.reg_id;
+
+
+
+mysql> alter table passport_application rename column reg_id to id;
+
+
+select * from passport_application natural join passport_registration;
+
+
+create table passport_dummy (id int primary key, name varchar(50), status varchar(50));
+
+insert into passport_dummy (id,name,status)
+values
+(1,'satyam','successful'),
+(2,'ankit','submitted');
+
+
+select pr.id,pr.name,pa.status,pd.name
+from passport_registration pr
+join passport_application pa on pr.id = pa.id
+join passport_dummy pd on pa.id = pd.id
+order by pr.id,pa.id,pd.id;
+
+
+
+select pr.id,pr.name,count(pa.status),count(pd.name),count(pa.app_date)
+from passport_registration pr
+join passport_application pa on pr.id = pa.id
+join passport_dummy pd on pa.id = pd.id
+group by pr.id, pr.name
+order by pr.id,pa.id,pd.id;

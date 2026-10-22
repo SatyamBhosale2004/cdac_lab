@@ -1,0 +1,174 @@
+day 7
+
+stored procedures
+
+
+delimiter //
+create procedure student_report()
+begin
+	select * from student;
+	select count(*) as total_stud from student;
+end //
+delimiter ;
+
+
+
+call student_report();
+
+
+
+
+
+delimiter //
+create procedure students_of_dept(in p_dept int)
+begin 	
+	select student_id,name,marks from student where dept_id = p_dept;
+end //
+
+create procedure count_students(out p_total int)
+begin 
+	select count(*) into p_total from student;
+end //
+
+create procedure add_bonus(inout p_marks decimal(5,2), in p_bonus decimal(5,2))
+begin 
+	set p_marks = least(p_marks + p_bonus, 100);
+end //
+delimiter ;
+
+
+call students_of_dept(10);
+call count_students(@total);
+select @total;
+
+set @m = 98.00;
+call add_bonus(@m,5);
+select @m;
+
+
+
+delimiter //
+create procedure class_summary()
+begin
+	declare v_avg decimal(5,2);
+	declare v_max decimal(5,2) default 0;
+	select avg(marks), max(marks) into v_avg,v_max from student;
+	select v_avg as average, v_max as highest, v_max - v_avg as gap;
+end//
+delimiter ;
+
+
+call class_summary();
+
+
+delimiter //
+create procedure stud_grade(in p_id int)
+begin
+	declare v_marks decimal(5,2);
+	declare v_grade char(1);
+	select marks into v_marks from student where student_id = p_id;
+	if v_marks >= 90 then set v_grade = 'a';
+	elseif v_marks >=80  then set v_grade = 'b';
+	elseif v_marks >=70 then set v_grade = 'c';
+	else set v_grade = 'f';
+	end if;
+	select p_id as student_id,v_marks as marks, v_grade as grade;
+end //
+
+
+create procedure dept_message(in p_dept int)
+begin
+	case p_dept
+		when 10 then select 'cs' as message;
+		when 20 then select 'it' as message;
+		else select 'other' as message;
+	end case;
+end //
+delimiter ;
+
+
+call stud_grade(101);
+call dept_message(20);
+
+
+select name,marks,
+	case when marks >= 90 then 'a' when marks >= 80 then 'b' when marks>=70 then 'c' else 'f' end as grade
+from student;
+
+
+loops
+
+
+delimiter //
+create procedure factorial_of(in p_n int)
+begin
+	declare i int default 1;
+	declare f bigint default 1;
+	while i <= p_n do
+		set f = f * i;
+		set i = i + 1;
+	end while;
+	select p_n as n, f as factorial;
+end //
+
+create procedure sum_odd(in p_n int, out p_sum int)
+begin
+	declare i int default 0;
+	set p_sum = 0;
+	odd_loop : loop
+		set i = i+1;
+		if i > p_n then leave odd_loop; end if;
+		if i mod 2 = 0 then iterate odd_loop;end if;
+		set p_sum = p_sum + i;
+	end loop odd_loop;
+end //
+
+create procedure count_up(in p_n int)
+begin
+	declare i int default 0;
+	repeat
+		set I = i+1;
+	until I >= p_n end repeat ;
+	select i as ended_at;
+end //
+delimiter ;
+
+
+call factorial_of(5);
+call sum_odd(7,@s);
+select @s;
+call count_up(0);
+
+functions
+
+create function f_to_c(p_f decimal(6,2)) returns decimal(6,2) deterministic return (p_f -32 ) * 5/9;
+
+
+delimiter //
+
+create function grade(p_marks decimal(5,2)) returns char(1) deterministic
+begin
+	declare g char(1);
+	if p_marks >= 90 then set g = 'a';
+	elseif p_marks >=80 then set g = 'b';
+	elseif p_marks >= 70 then set g ='c';
+	else set g = 'f';
+	end if;
+	return g;
+end //
+
+
+create fucntion dept_student_count (p_dept int) returns int reads sql data 
+begin
+	declare c int;
+	select count(*) into c from student where dept_id = p_dept;
+	return c;
+end //
+delimiter ;
+
+
+
+select name, marks, grade(marks) as grade from student;
+select dept_name, dept_student_count(dept_id) as students from department;
+select f_to_c(212), f_to_c(32);
+	

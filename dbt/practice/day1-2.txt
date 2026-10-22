@@ -375,4 +375,8 @@ delete from s_demo where course = 'dotnet';
 
 set sql_safe_updates = 1;
 update s_demo set age = 0;
+
 set sql_safe_updates = 0;
+
+
+

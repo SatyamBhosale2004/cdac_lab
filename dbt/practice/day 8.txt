@@ -1,0 +1,33 @@
+day 8
+
+
+cursor
+
+CREATE TABLE grade_report (
+    student_id INT, name VARCHAR(40), marks DECIMAL(5,2), grade CHAR(1)
+);
+
+delimiter //
+create procedure build_grade_report()
+begin
+	declare v_id int,
+	declare v_name varchar(40),
+	declare v_marks decimal(5,2),
+	declare done int default 0;
+	declare cur cursor for select student_id,name,marks from student;
+	declare continue handler for not found set done = 1;
+
+
+	delete from grade_report;
+	open cur;
+	read_loop: loop
+		fetch cur into v_id,v_name,v_marks;
+		if done = 1 then leave read_loop; end if;
+		insert into grade_report values(v_id,V_name,v_marks,grade_of(v_marks));
+	end loop;
+	close cur;
+	select * from grade_report;
+end //
+delimiter ;
+
+call build_grade_report();

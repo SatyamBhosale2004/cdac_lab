@@ -151,3 +151,81 @@ select * from emp where job like '%t';
 
 select ename from emp where comm is null;
 
+
+create table emp_skill (
+	id int primary key auto_increment,
+	name varchar(50),
+	gender Enum('male','female','other'),
+	skills set('java','python','aws')
+);
+
+INSERT INTO emp_skill (name, gender, skills) VALUES ('Priya','Female','Java,Python');
+SELECT name, skills FROM emp_skill;
+
+
+constraints prac
+
+
+create table constraint_demo (
+	id int primary key not null,
+	name varchar(50) unique,
+	age int check ( age > 18 ),
+	department varchar(10) default 'it'
+);
+
+insert into constraint_demo (id,name,age,department) 
+values 
+('satyam',22),
+('ankit',23,'medical'),
+('gg',15);
+
+
+cascade prac
+
+
+create table passport_registration (id int primary key auto_increment, name varchar(20));
+
+create table passport_application (
+	app_no int primary key,
+	status enum('rejected','successful','submitted'),
+	reg_id int,
+	app_date date,
+	constraint fk_app_reg_id foreign key (reg_id) references passport_registration  	(id) on delete cascade on update cascade
+);
+
+INSERT INTO passport_registration VALUES (1,'Aniket'),(2,'Rohit'),(3,'Akshay');
+INSERT INTO passport_application  (app_no,app_date,status,reg_id) VALUES
+(1,'2026-09-10','Rejected',1),(2,'2026-10-01','Submitted',1),(3,'2025-05-15','Successful',2);
+
+select app_no,app_date from passport_application order by app_date desc ;
+	
+
+select count(*) as total_app, count(app_no) as no_of_app, min(app_date) as oldest, max(app_date) as latest , avg(app_no) as avg_app from passport_application;
+
+
+select status,count(*) as total_app 
+from passport_application
+group by status;
+
+
+select status,count(*) as total_app 
+from passport_application
+where status = 'rejected'
+group by status;
+
+
+select status,count(*) as total_app 
+from passport_application
+group by status
+having status = 'rejected';
+
+select app_no,app_date,
+case status 
+	when 'rejected' then 'please re-apply'
+	when 'submitted' then 'in process'
+	when 'successful' then 'ja bhai desh chodhh kar'
+	else 'unknown'
+end as msg
+from passport_application; 
+
+

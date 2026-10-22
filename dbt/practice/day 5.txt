@@ -1,0 +1,81 @@
+day 5
+
+
+
+subqueries
+
+
+create table department (dept_id int primary key , dept_name varchar(50));
+
+insert into department values (10,'it'),(20,'sales'),(30,'hr'),(40,'admin'),(50,'finance');
+
+
+
+create table employee (emp_id int primary key, emp_name varchar(40),salary decimal(10,2),dept_id int, manager_id int, constraint fk_dept_id foreign key (dept_id) references department(dept_id));
+
+INSERT INTO employee VALUES
+ (1,'Aniket',60000,10,1),(2,'Pranav',50000,20,NULL),(3,'Omkar',70000,30,2),
+ (4,'Abhishek',65000,10,2),(5,'Aditya',80000,20,1),(6,'Shivraj',50000,40,NULL),(7,'Malkeet',45000,30,3);
+
+
+
+select emp_name,salary from employee where salary > (select avg(salary) from employee);
+
+
+
+select emp_name,salary,dept_id from employee where (salary,dept_id) in (select max(salary),dept_id from employee group by dept_id);
+
+
+
+select emp_name,salary from employee where salary > all(select salary from employee where dept_id = 10);
+
+
+
+select emp_name,salary from employee where salary > any(select salary from employee where dept_id = 10);
+
+
+select emp_name,salary from employee where salary in(select salary from employee where dept_id = 10);
+
+select emp_name,salary,dept_id from employee  where salary > (select avg(salary) from employee where dept_id = dept_id);
+
+select d.dept_id,d.dept_name from department d where exists(select 1 from employee e where e.dept_id = d.dept_id);
+
+
+select d.dept_id,d.dept_name from department d where not exists(select 1 from employee e where e.dept_id = d.dept_id);
+
+
+
+view
+
+
+create view sales_emp as 
+select emp_id,emp_name,salary from employee where dept_id = 20;
+
+
+select * from sales_emp;
+
+
+CREATE OR REPLACE VIEW sales_emp AS
+SELECT emp_id, emp_name, salary, dept_id -- Added dept_id here
+FROM employee WHERE dept_id = 20
+WITH CHECK OPTION;
+
+
+
+update sales_emp set dept_id = 30 where emp_id = 2;
+
+
+dcl
+
+
+create user 
+'report_user' @'localhost' identified by 'strongpassword@123';
+
+grant select on dbt_lab.* to 'report_user'@'localhost';
+
+
+grant insert,update on dbt_lab.employee to 'report_user'@'localhost';
+
+revoke update on dbt_lab.employee from 'report_user'@'localhost';
+
+show grants for 'report_user'@'localhost';

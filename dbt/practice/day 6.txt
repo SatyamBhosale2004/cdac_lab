@@ -1,0 +1,224 @@
+day 6
+
+
+indexes
+
+
+create table index_demo (emp_id int primary key auto_increment, emp_name varchar(100),dept_id int , salary decimal(10,2));
+
+
+set session cte_max_recursion_depth = 100000;
+
+insert into index_demo (emp_name,dept_id,salary)
+with recursive n as (select 1 as i union all select i+1 from n where i < 100000)
+select concat('employee_',i), 10 + (i%5)*10, 30000 + (i%50) * 1000 from n;
+
+
+select count(*) from index_demo;
+
+-- TITLE: plan before the index
+EXPLAIN SELECT * FROM index_demo WHERE emp_name = 'employee_99587';
+
+//single col
+create index idx_index_demo on index_demo(emp_name);
+EXPLAIN analyze SELECT * FROM index_demo WHERE emp_name = 'employee_99587';
+
+
+//composite index
+
+create index idx_dep_sal on index_demo (dept_id,salary);
+
+
+//unique index
+
+create unique index idx_uni_emp on index_demo(emp_name);
+
+show index from index_demo;
+
+select * from index_demo 
+where emp_name = 'employee_9999';
+
+create fulltext index idx_text_name on index_demo(emp_name);
+
+
+select emp_name from index_demo where emp
+
+
+
+
+windows and ctes
+
+
+CREATE TABLE department (
+    dept_id   INT PRIMARY KEY,
+    dept_name VARCHAR(50) NOT NULL
+);
+INSERT INTO department VALUES
+(10, 'Computer Science'), (20, 'Information Technology'), (30, 'Electronics');
+
+-- TITLE: student table linked to department
+CREATE TABLE student (
+    student_id INT PRIMARY KEY,
+    name       VARCHAR(40) NOT NULL,
+    dept_id    INT NULL,
+    marks      DECIMAL(5,2),
+    CONSTRAINT fk_student_department FOREIGN KEY (dept_id) REFERENCES department(dept_id)
+);
+INSERT INTO student VALUES
+(101, 'Amit', 10, 85.50), (102, 'Neha', 20, 92.00),
+(103, 'Rahul', 10, 76.50), (104, 'Priya', 30, 88.00);
+
+-- TITLE: employee table for window functions and CTEs
+CREATE TABLE employee (
+    emp_id       INT PRIMARY KEY,
+    emp_name     VARCHAR(30),
+    department   VARCHAR(30),
+    salary       INT,
+    joining_date DATE
+);
+INSERT INTO employee VALUES
+(1, 'Amit',   'IT',    60000, '2022-01-10'),
+(2, 'Priya',  'IT',    80000, '2021-06-15'),
+(3, 'Rahul',  'IT',    80000, '2023-03-20'),
+(4, 'Sneha',  'HR',    50000, '2022-08-01'),
+(5, 'Neha',   'HR',    60000, '2021-04-12'),
+(6, 'Karan',  'Sales', 45000, '2023-01-05'),
+(7, 'Pooja',  'Sales', 55000, '2022-11-18'),
+(8, 'Vikram', 'Sales', 55000, '2021-09-22'),
+(9, 'Meera',  'IT',    40000, '2024-02-14'),
+(10,'Arjun',  'HR',    50000, '2023-07-09');
+
+-- TITLE: accounts table for the bank-transfer lab
+CREATE TABLE accounts (
+    account_id   INT PRIMARY KEY,
+    account_name VARCHAR(50),
+balance      DECIMAL(10,2) NOT NULL,
+    CHECK (balance >= 0)
+) ENGINE = InnoDB;
+INSERT INTO accounts VALUES (1, 'Amit', 10000), (2, 'Aniket', 5000);
+
+
+every row and avg of emp salary
+
+
+select emp_name,department,salary,
+	avg(salary) over() as overall_avg
+from employee;
+
+row and specific dept avg
+
+select emp_name,department,salary,
+	avg(salary) over(partition by department) as dept_avg
+from employee;
+
+
+
+select department,avg(salary) as dept_avg from employee group by department;
+
+
+ranking func
+
+
+select emp_name,salary,
+	row_number() over (order by salary desc, emp_id) as row_no,
+	rank() over (order by salary desc) as rnk,
+	dense_rank() over (order by salary desc) as d_rnk,
+	ntile(4) over  (order by salary desc,emp_id) as bucket
+from employee 
+order by salary desc,emp_id; 
+
+
+select department,emp_name,salary
+from ( select department,emp_name,salary,
+		row_number() over (partition by department order by salary desc,emp_id) as rnk from employee) ranked where rnk = 1;
+
+
+select e.department,e.emp_name,e.salary
+from employee e
+inner join (
+	select department,max(salary) as max_sal
+	from employee group by department
+) dept_max
+on e.department = dept_max.department and e.salary = dept_max.max_sal;
+
+//here we get ties as well
+
+
+
+aggregate window func
+
+select emp_name,department,salary,
+	sum(salary) over (partition by department) as dept_total,
+	count(*) over (partition by department ) as dept_headcount
+from employee;
+	
+select emp_name,department,salary,
+	sum(salary) over (order by salary,emp_id rows between unbounded preceding and current row) as running_total
+from employee;
+
+
+select emp_name,joining_date,salary ,
+lag(salary) over (order by joining_date, emp_id) as prev_salary,
+lead(salary) over (order by joining_date,emp_id) as next_salary,
+salary - lag(salary) over (order by joining_date,emp_id) as change_from_prev
+from employee
+order by joining_date,emp_id;
+
+
+ctes
+
+
+with overall_avg as (
+	select avg(salary) as avg_salary from employee
+)
+select e.emp_name,e.department,e.salary
+from employee e
+cross join overall_average oa
+where e.salary < oa.avg_salary;
+
+chained cte
+
+with department_avg as (
+	select department,avg(salary) as avg_salary
+	from employee
+	group by department
+),
+above_avg as(
+	select e.emp_name,e.department,e.salary,d.avg_salary
+	from employee e
+	join department_avg d on e.department = d.department
+	where e.salary > d.avg_salary
+)
+select * from above_avg order by department,salary desc;
+
+
+with recursive numbers as (
+	select 1 as n
+	union all
+	select n+1 from numbers where n<10
+)
+select n from numbers;
+
+
+create table org (emp_id int primary key, emp_name varchar(30), manager_id int);
+
+insert into org values
+(1,'anita',null),
+(2,'bharat',1),
+(3,'chitra',1),
+(4,'deepak',2),
+(5,'esha',2),
+(6,'farhan',4);
+
+
+
+with recursive chain as (
+	select emp_id,emp_name,manager_id, 1 as level,
+	cast(emp_name as char(200)) as path
+	from org where manager_id is null
+	union all
+	select o.emp_id,o.emp_name,o.manager_id,c.level+1,
+	concat(c.path,'>',o.emp_name)
+	from org o join chain c on o.manager_id = c.emp_id
+)
+select emp_id,emp_name,level,path from chain order by level,emp_id;
