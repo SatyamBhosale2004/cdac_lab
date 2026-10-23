@@ -1,0 +1,35 @@
+* {
+    box-sizing : border-box;
+}
+
+body {
+    margin : 0 ;
+    font-family: poppins, sans-serif;
+    color: #1f2937;
+    background-color: #f3f6fb;
+}
+
+.page {
+    max-width: 720px;
+    margin: 48px auto;
+    padding: 24px;
+    background-color:white;
+    border: 1px solid #d8e0eb;
+    border-radius: 12px;
+}
+
+h1 {
+    color: #174ea6;
+}
+
+.intro{
+    line-height: 1.6;
+}
+
+.link{
+    color: #174ea6;
+}
+
+.link:hover{
+    color:#0b57d0;
+}

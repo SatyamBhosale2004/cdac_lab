@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Practice page</title>
+    <link rel = "stylesheet" href ="styles.css">
+  </head>
+  <body>
+    <h1>Hello World</h1>
+    <p>Chalo shuru karte hai</p>
+    <p><strong>Strong tag</strong><b> Bold tag</b></p>
+    <!-- <blockquote cite = "https://harumemoirs.xyz"> <p>Kairos client</p></blockquote> -->
+    <a href="https://harumemoirs.xyz" target="_blank" rel="noopener"
+      >Kairos client</a
+    >
+    <!-- absolute url -->
+    <a href="mailto:satyam.bhosale.cmaug26@gmail.com">My email</a>
+    <br />
+    <img
+      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREP4dw_I3pAXaFI2FRBHXDc_-MT9dAkRPuM82nrPYTkg&s=10"
+      alt="cat img"
+      width="400"
+      height="400"
+    />
+    <br />
+    <h2>Skills i am learning</h2>
+    <ul>
+      <li>html</li>
+      <li>css</li>
+      <li>ts</li>
+      <li>js</li>
+    </ul>
+    <br />
+    <h2>Ordered list</h2>
+    <ol>
+      <li>uno</li>
+      <li>dos</li>
+      <li>tres</li>
+    </ol>
+    <br />
+    <h2>description list</h2>
+    <dl>
+      <dt>html</dt>
+      <dd>Defines structure and content of a web page</dd>
+      <dt>css</dt>
+      <dd>controls presentation</dd>
+    </dl>
+    <br />
+    <table>
+      <caption>
+        prac table
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">topic</th>
+          <th scope="col">purpose</th>
+          <th scope="col">status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Html</th>
+          <td>Struc</td>
+          <td>learning</td>
+        </tr>
+        <tr>
+          <th scope="row">css</th>
+          <td>layout</td>
+          <td>gg</td>
+        </tr>
+      </tbody>
+    </table>
+    <br />
+    <!-- aira -->
+    <header>
+      <h1>portfolio</h1>
+      <nav aria-label="main anvigation">
+        <ul>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <section id="projects" aria-labelledby="projects-title">
+        <h2 id="projects-title">Projects</h2>
+        <article>
+          <h3>Project 1</h3>
+          <p>description</p>
+        </article>
+      </section>
+      <aside>
+        <h2>Currently learning</h2>
+        <p>html and css</p>
+      </aside>
+    </main>
+    <footer>
+      <p>&copy; 2026 my portfolio</p>
+    </footer>
+    <br />
+    <iframe
+      src="https://www.youtube.com/embed/0E3gH_soLo4"
+      title="Eg of iframe"
+      width="600"
+      height="400"
+      loading="lazy"
+      frameborder="0"
+      allowfullscreen
+    >
+    </iframe>
+    <br />
+    <h2>Audio video tag</h2>
+    <video controls width="600" poster="images.jpg">
+      <source src="messi.mp4" type="video/mp4" />
+      <p>
+        Your browser cannot display this video u can
+        <a href="messi.mp4">download this</a> video
+      </p>
+    </video>
+
+    <br />
+    <canvas id="drawing" width="400" height="300"
+      >A blue rectangle in supporting browser</canvas
+    >
+    <script>
+      const canvas = document.querySelector("#drawing");
+      const context = canvas.getContext("2d");
+
+      if (context) {
+        context.fillStyle = "royalblue";
+        context.fillRect(30, 30, 180, 100);
+      }
+    </script>
+
+    <br />
+    <h2>FInd my location</h2>
+    <button id="locate">Request location</button>
+    <p id="result" role="status">Location has not been requested.</p>
+
+    <script>
+      const button = document.querySelector("#locate");
+      const result = document.querySelector("#result");
+
+      button.addEventListener("click", () => {
+        if (!("geolocation" in navigator)) {
+          result.textContext = "Geolocation is not supported by this browser";
+          return;
+        }
+        result.textContent = "Requesting location permission…";
+
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            result.textContent = `Latitude: ${latitude}; longitude: ${longitude}`;
+          },
+          (error) => {
+            result.textContent = `Could not get location: ${error.message}`;
+          }
+        );
+      });
+    </script>
+    <!-- css -->
+     <p style=" color : royalblue " >This para is in royal blue color</p>
+  </body>
+</html>

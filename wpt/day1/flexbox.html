@@ -1,0 +1,88 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name = "viewport" content = "width=device-width",initial-scale = 1.0 />
+    <title>flexbox practice</title>
+    <style>
+        *{ box-sizing: border-box;}
+        body { margin : 0; padding: 24px; font-family:arial,sans-serif;}
+        .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px;
+      border: 1px solid #d5dce7;
+      border-radius: 12px;
+      background: #f5f8fc;
+    }
+    .brand { font-weight: 700; color: #174ea6; }
+    .nav-links { display: flex; gap: 12px; flex-wrap: wrap; }
+    .nav-links a { color: #344054; text-decoration: none; }
+    .nav-links a:hover { text-decoration: underline; }
+    .action { border: 0; border-radius: 8px; padding: 10px 14px; color: white; background: #174ea6; }
+    </style>
+</head>
+<body>
+    <nav class="nav" aria-label="Main navigation">
+    <a class="brand" href="#home">LabBoard</a>
+    <div class="nav-links">
+      <a href="#tasks">Tasks</a>
+      <a href="#progress">Progress</a>
+      <a href="#resources">Resources</a>
+    </div>
+    <button class="action" type="button">New task</button>
+</body>
+</html>
+
+
+grid: -->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Grid Practice</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: 24px; font-family: Arial, sans-serif; color: #1f2937; background: #f7f9fc; }
+    h1 { margin-top: 0; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .card {
+      padding: 20px;
+      border: 1px solid #d8e0eb;
+      border-radius: 12px;
+      background: white;
+      min-width: 0;
+    }
+    .card h2 { margin-top: 0; font-size: 1.1rem; }
+    .card p { line-height: 1.5; color: #667085; }
+    @media (max-width: 700px) {
+      .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 480px) {
+      body { padding: 16px; }
+      .cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>My Learning Cards</h1>
+    <section class="cards" aria-label="Learning topics">
+      <article class="card"><h2>HTML</h2><p>Structure and meaning.</p></article>
+      <article class="card"><h2>CSS</h2><p>Presentation and layout.</p></article>
+      <article class="card"><h2>JavaScript</h2><p>Behaviour and logic.</p></article>
+      <article class="card"><h2>HTTP</h2><p>Requests and responses.</p></article>
+      <article class="card"><h2>Git</h2><p>Version history and collaboration.</p></article>
+      <article class="card"><h2>Accessibility</h2><p>Making content usable by more people.</p></article>
+    </section>
+  </main>
+</body>
+</html>

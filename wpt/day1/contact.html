@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>contact form</title>
+</head>
+<body>
+    <h1>COntact me</h1>
+    <form action = "/contact" method = "get">
+        <div>
+            <label for ="full-name">full name</label>
+            <input id = "full-name" name="fullName" type="text" required minlength = "2">
+        </div>
+        <div>
+            <label for=""email-id">Email address</label>
+            <input id ="email" name = "email" type ="email" required>
+        </div>
+        <div>
+            <label for = "reason">Reason for contact</label>
+            <select id = "reason" name = "reason" requried>
+                <option value="">Choose me</option>
+                <option value = "project">Project discussion</option>
+                <option value = "job">Job opportunity</option>
+                <option value = "other">Other</option>
+            </select>
+        </div>
+        <div>
+            <label for = "message">Message</label>
+            <textarea id ="message" name = "message" row="4" required minlength="10"></textarea>
+            
+        </div>
+        <div>
+            <label for = "radio prac" >Radio btn</label>
+            <input type ="radio" id ="student" name ="role" value = "student"> <label>Student</label>
+            <input type ="radio" id ="professional" name ="role" value = "professional"> <label>Professioanl</label>
+        </div>
+        <button type = "submit">Send message</button>
+    </form>
+</body>
+</html>
