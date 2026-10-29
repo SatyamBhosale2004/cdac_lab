@@ -299,3 +299,119 @@ async function getProjects(){
 }
 
 getProjects();
+
+// promise.resolve()
+
+console.log("start");
+
+setTimeout(()=> console.log("Timer"),0);
+
+Promise.resolve().then(()=> {
+  console.log("promise-1");
+  Promise.resolve().then(()=>console.log("Promise-2"));
+});
+
+Promise.resolve().then(()=>console.log("Promise-3"));
+
+console.log("end");
+
+//doms forms regex debugging
+
+const title = document.querySelector("#page-title");
+const status = document.querySelector("#status");
+
+
+title.textContent = "My loading  dashboard";
+status.textContent = "Session started";
+
+//create adn remove elem
+
+const list = document.querySelector("#topic-list");
+
+if(list){
+  const item = document.createElement("li");
+  item.textContent = "JS";
+  list.append(item);
+}
+
+const para = document.querySelector("#status");
+if(para){
+  const newPara = document.createElement("p");
+  newPara.textContent = "hello im new para tag";
+  para.append(newPara);
+  const newPara2 = document.createElement("p");
+  newPara2.textContent = "2nd one";
+  para.append(newPara2);
+}
+
+const paragraph = document.getElementById("status");
+
+console.log(paragraph.innerHTML);
+
+paragraph.textContent = "Updated content";
+
+paragraph.style.color="red";
+paragraph.style.backgroundColor = "black";
+
+const container = document.getElementById("container");
+
+const heading = document.createElement("h2");
+heading.textContent = "Dynamic heding";
+
+container.appendChild(heading);
+
+// heading.remove();
+
+
+const passwordField = document.getElementById("password-field");
+
+console.log(passwordField.getAttribute("type"));
+
+passwordField.setAttribute("type","text");
+
+
+const input = document.getElementById("number-field");
+
+const rawValue = input.value;
+
+const numberValue = Number(rawValue);
+
+
+
+const button = document.getElementById("greet");
+const greeting = document.querySelector("#greeting");
+
+if(button && greeting){
+  button.addEventListener("click",()=>{
+    greeting.textContent = "Hello! after btn";
+  });
+}
+
+button.addEventListener("click",event=>{
+  console.log("event type",event.type);
+  console.log("element clicked",event.currentTarget);
+});
+
+const form = document.querySelector("#resume-form");
+const firstNameInput = document.querySelector("#first-name");
+const lastNameInput = document.querySelector("#last-name");
+const feedback = document.querySelector("#form-feedback");
+
+if(form && firstNameInput && lastNameInput && feedback){
+  form.addEventListener("submit",event=>{
+    event.preventDefault();
+
+    const firstName = firstNameInput.value.trim();
+    const lastName = lastNameInput.value.trim();
+
+    if(firstName.length<2 || lastName.length < 2){
+      feedback.textContent = "Both names must contain atleast two char";
+      return;
+    }
+    feedback.textContent = `Resume contact for ${firstName} ${lastName} is ready`;
+  });
+
+  form.addEventListener("reset",()=>{
+    feedback.textContent = "Form reset.";
+  });
+} 
