@@ -415,3 +415,8 @@ if(form && firstNameInput && lastNameInput && feedback){
     feedback.textContent = "Form reset.";
   });
 } 
+
+const profile = {contact:{id:1,name:"name1"}};
+console.log(profile.contact);
+console.log(profile.contact?.name);
+console.log(profile.address?.name);
